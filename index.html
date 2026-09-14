@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="description" content="Cổng thông tin Ngành Thiết kế Nội thất – Trường Đại học Tôn Đức Thắng" />
+  <title>TDTU TKNT – Thiết kế Nội thất</title>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+      background: #f7f7f5;
+      color: #1a1a1a;
+      min-height: 100dvh;
+      display: flex;
+      flex-direction: column;
+    }
+
+    header {
+      background: #1a3c5e;
+      color: #fff;
+      padding: 2rem 1.5rem 1.5rem;
+      text-align: center;
+    }
+    header .subtitle {
+      font-size: 0.875rem;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      opacity: 0.7;
+      margin-bottom: 0.4rem;
+    }
+    header h1 {
+      font-size: clamp(1.4rem, 4vw, 2rem);
+      font-weight: 700;
+      line-height: 1.25;
+    }
+    header .tagline {
+      margin-top: 0.5rem;
+      font-size: 0.95rem;
+      opacity: 0.8;
+    }
+
+    main {
+      flex: 1;
+      max-width: 900px;
+      width: 100%;
+      margin: 0 auto;
+      padding: 2.5rem 1.5rem;
+    }
+
+    .apps-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+      gap: 1.25rem;
+      margin-top: 2rem;
+    }
+
+    .app-card {
+      background: #fff;
+      border: 1px solid #e2e2e0;
+      border-radius: 10px;
+      padding: 1.5rem;
+      text-decoration: none;
+      color: inherit;
+      display: flex;
+      flex-direction: column;
+      gap: 0.5rem;
+      transition: box-shadow 0.15s, border-color 0.15s;
+    }
+    .app-card:hover {
+      border-color: #1a3c5e;
+      box-shadow: 0 4px 16px rgba(26,60,94,0.10);
+    }
+    .app-card .app-icon { font-size: 2rem; }
+    .app-card .app-name { font-weight: 700; font-size: 1.05rem; }
+    .app-card .app-desc { font-size: 0.875rem; color: #555; line-height: 1.5; }
+    .app-card.coming-soon { opacity: 0.5; cursor: default; pointer-events: none; }
+    .badge {
+      display: inline-block;
+      font-size: 0.7rem;
+      font-weight: 600;
+      padding: 0.15em 0.55em;
+      border-radius: 4px;
+      background: #e0e8f0;
+      color: #1a3c5e;
+      letter-spacing: 0.04em;
+      align-self: flex-start;
+    }
+    .badge.live { background: #d4edda; color: #155724; }
+
+    footer {
+      text-align: center;
+      padding: 1.5rem;
+      font-size: 0.8rem;
+      color: #888;
+      border-top: 1px solid #e2e2e0;
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <p class="subtitle">Trường Đại học Tôn Đức Thắng</p>
+    <h1>Khoa Mỹ thuật Công nghiệp<br>Ngành Thiết kế Nội thất</h1>
+    <p class="tagline">Cổng thông tin &amp; công cụ hỗ trợ sinh viên</p>
+  </header>
+
+  <main>
+    <h2 style="font-size:1rem; color:#555; font-weight:500;">Công cụ &amp; tiện ích</h2>
+
+    <div class="apps-grid">
+      <!-- PDF Optimizer: enabled=false → coming soon -->
+      <div class="app-card coming-soon" aria-disabled="true">
+        <span class="app-icon">📄</span>
+        <span class="badge">Sắp ra mắt</span>
+        <p class="app-name">PDF Optimizer &amp; Resizer</p>
+        <p class="app-desc">Tối ưu, ghép, chia nhỏ và chuyển đổi file PDF ngay trên trình duyệt — không cần cài phần mềm.</p>
+      </div>
+
+      <!-- Placeholder for future apps -->
+      <div class="app-card coming-soon" aria-disabled="true">
+        <span class="app-icon">🎓</span>
+        <span class="badge">Sắp ra mắt</span>
+        <p class="app-name">Hỗ trợ DATN</p>
+        <p class="app-desc">Hướng dẫn và biểu mẫu dành cho sinh viên làm Đồ án Tốt nghiệp ngành Thiết kế Nội thất.</p>
+      </div>
+    </div>
+  </main>
+
+  <footer>
+    &copy; <span id="yr"></span> Ngành Thiết kế Nội thất – Đại học Tôn Đức Thắng
+    &nbsp;·&nbsp;
+    <a href="https://github.com/tranquanghai-ops/TDTU-TKNT-Portal" style="color:#1a3c5e;">GitHub</a>
+  </footer>
+
+  <script>document.getElementById('yr').textContent = new Date().getFullYear();</script>
+</body>
+</html>
