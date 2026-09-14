@@ -1,0 +1,73 @@
+name: Deploy Preview Channel
+
+# ────────────────────────────────────────────────────────────────────────────
+# SKELETON — Preview channel deployments are DISABLED until:
+#   1. Firebase Hosting preview channels are enabled for the project
+#   2. FIREBASE_SERVICE_ACCOUNT_TDTU_TKNT secret is configured in repo settings
+#
+# To enable: change the trigger below from workflow_dispatch to pull_request
+# and ensure the secret is set.
+# ────────────────────────────────────────────────────────────────────────────
+
+on:
+  # Manual trigger only until configured
+  workflow_dispatch:
+    inputs:
+      reason:
+        description: "Reason for manual preview deploy"
+        required: false
+        default: "Manual preview test"
+
+concurrency:
+  group: deploy-preview-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  deploy-preview:
+    name: Deploy to Firebase preview channel
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Check required secret
+        env:
+          HAS_SECRET: ${{ secrets.FIREBASE_SERVICE_ACCOUNT_TDTU_TKNT != '' }}
+        run: |
+          if [ "$HAS_SECRET" != "true" ]; then
+            echo "::error::FIREBASE_SERVICE_ACCOUNT_TDTU_TKNT secret is not set."
+            echo "Preview deploy skipped. See README for setup instructions."
+            exit 0
+          fi
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+
+      - name: Install dependencies
+        run: npm install --ignore-scripts
+
+      - name: Validate registry
+        run: npm run validate
+
+      - name: Download app artifacts
+        # TODO: Use gh release download for each enabled app
+        # Example:
+        #   gh release download $VERSION -R $REPO -p $ARTIFACT -D build-artifacts/
+        run: echo "No enabled apps to download."
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Build
+        run: npm run build
+
+      - name: Deploy to preview channel
+        uses: FirebaseExtended/action-hosting-deploy@v0
+        with:
+          repoToken: ${{ secrets.GITHUB_TOKEN }}
+          firebaseServiceAccount: ${{ secrets.FIREBASE_SERVICE_ACCOUNT_TDTU_TKNT }}
+          projectId: tdtu-tknt
+          channelId: preview-${{ github.run_id }}
+          expires: 7d

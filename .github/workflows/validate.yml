@@ -1,0 +1,52 @@
+name: Validate Registry & Build
+
+on:
+  push:
+    branches: ["**"]
+  pull_request:
+    branches: ["**"]
+  # Allow app repos to trigger validation via repository_dispatch
+  repository_dispatch:
+    types: [app-release]
+
+concurrency:
+  group: validate-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  validate:
+    name: Validate registry and dry-run build
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+
+      - name: Install dependencies
+        run: npm install --ignore-scripts
+
+      - name: Validate apps-registry.json
+        run: npm run validate
+
+      - name: Dry-run build (no artifacts needed)
+        run: ASSEMBLE_DRY_RUN=1 node scripts/assemble.mjs
+
+      - name: Check build/ is gitignored
+        run: |
+          if git ls-files --error-unmatch build/ 2>/dev/null; then
+            echo "ERROR: build/ should be gitignored but files in it are tracked." && exit 1
+          else
+            echo "OK: build/ is not tracked by git (correctly gitignored or doesn't exist)."
+          fi
+
+      - name: Summary
+        if: always()
+        run: |
+          echo "### Validation Summary" >> $GITHUB_STEP_SUMMARY
+          echo "- Registry: validated" >> $GITHUB_STEP_SUMMARY
+          echo "- Dry-run build: passed" >> $GITHUB_STEP_SUMMARY

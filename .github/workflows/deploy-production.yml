@@ -1,0 +1,92 @@
+name: Deploy Production
+
+# ────────────────────────────────────────────────────────────────────────────
+# Production deploy to https://tdtu-tknt.web.app
+#
+# REQUIRES (configure in GitHub repo Settings → Secrets and variables → Actions):
+#   FIREBASE_SERVICE_ACCOUNT_TDTU_TKNT  — Service account JSON key for project tdtu-tknt
+#
+# Until the secret is set, the deploy step will be skipped safely.
+# The validate + build steps always run so you can verify the build is correct.
+# ────────────────────────────────────────────────────────────────────────────
+
+on:
+  push:
+    branches: [main]
+  # Allow app repos to trigger production deploy after a new release
+  repository_dispatch:
+    types: [app-release]
+
+# Never cancel a running production deploy
+concurrency:
+  group: deploy-production
+  cancel-in-progress: false
+
+jobs:
+  deploy-production:
+    name: Build & deploy to production
+    runs-on: ubuntu-latest
+    environment: production
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+
+      - name: Install dependencies
+        run: npm install --ignore-scripts
+
+      - name: Validate registry
+        run: npm run validate
+
+      - name: Download enabled app artifacts
+        # For each enabled app:
+        #   gh release download $VERSION -R $REPO -p $ARTIFACT -D build-artifacts/
+        # This step is a placeholder — implement when first app is enabled.
+        run: |
+          ENABLED=$(jq -r '[.apps[] | select(.enabled==true) | .id] | if length==0 then "none" else join(",") end' apps-registry.json)
+          echo "Enabled apps: $ENABLED"
+          if [ "$ENABLED" = "none" ]; then
+            echo "No apps enabled — skipping artifact download."
+          fi
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Build
+        run: npm run build
+
+      - name: Check Firebase credentials
+        id: check-creds
+        env:
+          HAS_SECRET: ${{ secrets.FIREBASE_SERVICE_ACCOUNT_TDTU_TKNT != '' }}
+        run: |
+          echo "has_secret=$HAS_SECRET" >> $GITHUB_OUTPUT
+          if [ "$HAS_SECRET" != "true" ]; then
+            echo "::warning::FIREBASE_SERVICE_ACCOUNT_TDTU_TKNT is not set — production deploy skipped."
+            echo "To enable: add the Firebase service account JSON as a repository secret."
+          fi
+
+      - name: Deploy to Firebase Hosting (production)
+        if: steps.check-creds.outputs.has_secret == 'true'
+        uses: FirebaseExtended/action-hosting-deploy@v0
+        with:
+          repoToken: ${{ secrets.GITHUB_TOKEN }}
+          firebaseServiceAccount: ${{ secrets.FIREBASE_SERVICE_ACCOUNT_TDTU_TKNT }}
+          projectId: tdtu-tknt
+          channelId: live
+
+      - name: Deploy skipped notice
+        if: steps.check-creds.outputs.has_secret != 'true'
+        run: |
+          echo "### Production Deploy Skipped" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "Build succeeded ✅ — deploy was skipped because \`FIREBASE_SERVICE_ACCOUNT_TDTU_TKNT\` secret is not configured." >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "**To enable production deploy:**" >> $GITHUB_STEP_SUMMARY
+          echo "1. Go to Firebase Console → Project Settings → Service accounts" >> $GITHUB_STEP_SUMMARY
+          echo "2. Generate a new private key for project \`tdtu-tknt\`" >> $GITHUB_STEP_SUMMARY
+          echo "3. Add it as GitHub secret: \`FIREBASE_SERVICE_ACCOUNT_TDTU_TKNT\`" >> $GITHUB_STEP_SUMMARY

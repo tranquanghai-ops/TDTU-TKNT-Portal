@@ -138,10 +138,10 @@ for (const [i, app] of apps.entries()) {
 if (errors.length > 0) {
   console.error('[validate] Registry validation FAILED:\n');
   for (const err of errors) {
-    console.error('  \u2717', err);
+    console.error('  ✗', err);
   }
   process.exit(1);
 }
 
-console.log(`[validate] OK \u2014 ${apps.length} app(s) registered, ${[...seenIds].filter(id => apps.find(a => a.id === id)?.enabled).length} enabled.`);
+console.log(`[validate] OK — ${apps.length} app(s) registered, ${[...seenIds].filter(id => apps.find(a => a.id === id)?.enabled).length} enabled.`);
 process.exit(0);
