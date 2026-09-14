@@ -2,11 +2,11 @@
   "apps": [
     {
       "id": "pdf-optimizer",
-      "repo": "tranquanghai-ops/PDF-Optimizer-Resizer-Studio",
+      "repo": "tranquanghai-ops/PDF-Optimizer",
       "mount": "/pdf-optimizer/",
       "artifact": "pdf-optimizer.zip",
-      "enabled": false,
-      "version": null,
+      "enabled": true,
+      "version": "v1.0.0",
       "hashed_assets": false,
       "require_index": true
     }
