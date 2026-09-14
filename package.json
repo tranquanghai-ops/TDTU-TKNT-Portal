@@ -1,7 +1,7 @@
 {
   "name": "tdtu-tknt-portal",
   "version": "1.0.0",
-  "description": "TDTU TKNT Portal – assembles and deploys https://tdtu-tknt.web.app",
+  "description": "TDTU TKNT Portal – assembles and deploys https://tknt-tdtu.web.app",
   "type": "module",
   "scripts": {
     "validate": "node scripts/validate-registry.mjs",

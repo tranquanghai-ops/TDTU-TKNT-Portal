@@ -1,8 +1,8 @@
 # TDTU TKNT Portal
 
-Central deployment repository for **https://tdtu-tknt.web.app** — the portal for the Interior Design program at Tôn Đức Thắng University.
+Central deployment repository for **https://tknt-tdtu.web.app** — the portal for the Interior Design program at Tôn Đức Thắng University.
 
-> **Only this repository deploys to `tdtu-tknt.web.app`.**  
+> **Only this repository deploys to `tknt-tdtu.web.app`.**  
 > App repositories remain independent and do NOT deploy to this site directly.
 
 ---
@@ -69,7 +69,7 @@ npm run build
 
 ## Deploying
 
-Production deploy runs automatically from `main` via GitHub Actions once `FIREBASE_SERVICE_ACCOUNT_TDTU_TKNT` secret is configured.
+Production deploy runs automatically from `main` via GitHub Actions once `FIREBASE_SERVICE_ACCOUNT_TKNT_TDTU` (or `FIREBASE_SERVICE_ACCOUNT_TDTU_TKNT`) secret is configured.
 
 For manual deploy:
 ```bash

@@ -1,10 +1,11 @@
 name: Deploy Production
 
 # ────────────────────────────────────────────────────────────────────────────
-# Production deploy to https://tdtu-tknt.web.app
+# Production deploy to https://tknt-tdtu.web.app
 #
 # REQUIRES (configure in GitHub repo Settings → Secrets and variables → Actions):
-#   FIREBASE_SERVICE_ACCOUNT_TDTU_TKNT  — Service account JSON key for project tdtu-tknt
+#   FIREBASE_SERVICE_ACCOUNT_TKNT_TDTU  — Service account JSON key for project tknt-tdtu
+#   (also accepts FIREBASE_SERVICE_ACCOUNT_TDTU_TKNT for backwards compatibility)
 #
 # Until the secret is set, the deploy step will be skipped safely.
 # The validate + build steps always run so you can verify the build is correct.
@@ -68,11 +69,11 @@ jobs:
       - name: Check Firebase credentials
         id: check-creds
         env:
-          HAS_SECRET: ${{ secrets.FIREBASE_SERVICE_ACCOUNT_TDTU_TKNT != '' }}
+          HAS_SECRET: ${{ secrets.FIREBASE_SERVICE_ACCOUNT_TKNT_TDTU != '' || secrets.FIREBASE_SERVICE_ACCOUNT_TDTU_TKNT != '' }}
         run: |
           echo "has_secret=$HAS_SECRET" >> $GITHUB_OUTPUT
           if [ "$HAS_SECRET" != "true" ]; then
-            echo "::warning::FIREBASE_SERVICE_ACCOUNT_TDTU_TKNT is not set — production deploy skipped."
+            echo "::warning::FIREBASE_SERVICE_ACCOUNT_TKNT_TDTU is not set — production deploy skipped."
             echo "To enable: add the Firebase service account JSON as a repository secret."
           fi
 
@@ -81,8 +82,8 @@ jobs:
         uses: FirebaseExtended/action-hosting-deploy@v0
         with:
           repoToken: ${{ secrets.GITHUB_TOKEN }}
-          firebaseServiceAccount: ${{ secrets.FIREBASE_SERVICE_ACCOUNT_TDTU_TKNT }}
-          projectId: tdtu-tknt
+          firebaseServiceAccount: ${{ secrets.FIREBASE_SERVICE_ACCOUNT_TKNT_TDTU || secrets.FIREBASE_SERVICE_ACCOUNT_TDTU_TKNT }}
+          projectId: tknt-tdtu
           channelId: live
 
       - name: Deploy skipped notice
@@ -90,9 +91,9 @@ jobs:
         run: |
           echo "### Production Deploy Skipped" >> $GITHUB_STEP_SUMMARY
           echo "" >> $GITHUB_STEP_SUMMARY
-          echo "Build succeeded ✅ — deploy was skipped because \`FIREBASE_SERVICE_ACCOUNT_TDTU_TKNT\` secret is not configured." >> $GITHUB_STEP_SUMMARY
+          echo "Build succeeded ✅ — deploy was skipped because \`FIREBASE_SERVICE_ACCOUNT_TKNT_TDTU\` secret is not configured." >> $GITHUB_STEP_SUMMARY
           echo "" >> $GITHUB_STEP_SUMMARY
           echo "**To enable production deploy:**" >> $GITHUB_STEP_SUMMARY
           echo "1. Go to Firebase Console → Project Settings → Service accounts" >> $GITHUB_STEP_SUMMARY
-          echo "2. Generate a new private key for project \`tdtu-tknt\`" >> $GITHUB_STEP_SUMMARY
-          echo "3. Add it as GitHub secret: \`FIREBASE_SERVICE_ACCOUNT_TDTU_TKNT\`" >> $GITHUB_STEP_SUMMARY
+          echo "2. Generate a new private key for project \`tknt-tdtu\`" >> $GITHUB_STEP_SUMMARY
+          echo "3. Add it as GitHub secret: \`FIREBASE_SERVICE_ACCOUNT_TKNT_TDTU\`" >> $GITHUB_STEP_SUMMARY

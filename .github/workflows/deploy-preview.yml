@@ -33,10 +33,10 @@ jobs:
 
       - name: Check required secret
         env:
-          HAS_SECRET: ${{ secrets.FIREBASE_SERVICE_ACCOUNT_TDTU_TKNT != '' }}
+          HAS_SECRET: ${{ secrets.FIREBASE_SERVICE_ACCOUNT_TKNT_TDTU != '' || secrets.FIREBASE_SERVICE_ACCOUNT_TDTU_TKNT != '' }}
         run: |
           if [ "$HAS_SECRET" != "true" ]; then
-            echo "::error::FIREBASE_SERVICE_ACCOUNT_TDTU_TKNT secret is not set."
+            echo "::error::FIREBASE_SERVICE_ACCOUNT_TKNT_TDTU secret is not set."
             echo "Preview deploy skipped. See README for setup instructions."
             exit 0
           fi
@@ -78,7 +78,7 @@ jobs:
         uses: FirebaseExtended/action-hosting-deploy@v0
         with:
           repoToken: ${{ secrets.GITHUB_TOKEN }}
-          firebaseServiceAccount: ${{ secrets.FIREBASE_SERVICE_ACCOUNT_TDTU_TKNT }}
-          projectId: tdtu-tknt
+          firebaseServiceAccount: ${{ secrets.FIREBASE_SERVICE_ACCOUNT_TKNT_TDTU || secrets.FIREBASE_SERVICE_ACCOUNT_TDTU_TKNT }}
+          projectId: tknt-tdtu
           channelId: preview-${{ github.run_id }}
           expires: 7d
