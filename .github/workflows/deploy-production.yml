@@ -44,14 +44,20 @@ jobs:
         run: npm run validate
 
       - name: Download enabled app artifacts
-        # For each enabled app:
-        #   gh release download $VERSION -R $REPO -p $ARTIFACT -D build-artifacts/
-        # This step is a placeholder — implement when first app is enabled.
         run: |
           ENABLED=$(jq -r '[.apps[] | select(.enabled==true) | .id] | if length==0 then "none" else join(",") end' apps-registry.json)
           echo "Enabled apps: $ENABLED"
           if [ "$ENABLED" = "none" ]; then
             echo "No apps enabled — skipping artifact download."
+          else
+            mkdir -p build-artifacts
+            jq -c '.apps[] | select(.enabled == true)' apps-registry.json | while read -r app; do
+              REPO=$(echo "$app" | jq -r '.repo')
+              VERSION=$(echo "$app" | jq -r '.version')
+              ARTIFACT=$(echo "$app" | jq -r '.artifact')
+              echo "Downloading $ARTIFACT for $REPO @ $VERSION..."
+              gh release download "$VERSION" -R "$REPO" -p "$ARTIFACT" -D build-artifacts/ --clobber
+            done
           fi
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

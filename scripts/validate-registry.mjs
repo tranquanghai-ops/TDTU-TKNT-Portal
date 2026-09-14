@@ -122,6 +122,8 @@ for (const [i, app] of apps.entries()) {
   // version
   if (app.version !== null && (typeof app.version !== 'string' || !app.version.trim())) {
     errors.push(`${prefix} "version" must be null or a non-empty string.`);
+  } else if (app.enabled && (!app.version || !app.version.trim())) {
+    errors.push(`${prefix} "version" must be a non-empty string when "enabled" is true.`);
   }
 
   // hashed_assets

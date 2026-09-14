@@ -52,11 +52,22 @@ jobs:
       - name: Validate registry
         run: npm run validate
 
-      - name: Download app artifacts
-        # TODO: Use gh release download for each enabled app
-        # Example:
-        #   gh release download $VERSION -R $REPO -p $ARTIFACT -D build-artifacts/
-        run: echo "No enabled apps to download."
+      - name: Download enabled app artifacts
+        run: |
+          ENABLED=$(jq -r '[.apps[] | select(.enabled==true) | .id] | if length==0 then "none" else join(",") end' apps-registry.json)
+          echo "Enabled apps: $ENABLED"
+          if [ "$ENABLED" = "none" ]; then
+            echo "No apps enabled — skipping artifact download."
+          else
+            mkdir -p build-artifacts
+            jq -c '.apps[] | select(.enabled == true)' apps-registry.json | while read -r app; do
+              REPO=$(echo "$app" | jq -r '.repo')
+              VERSION=$(echo "$app" | jq -r '.version')
+              ARTIFACT=$(echo "$app" | jq -r '.artifact')
+              echo "Downloading $ARTIFACT for $REPO @ $VERSION..."
+              gh release download "$VERSION" -R "$REPO" -p "$ARTIFACT" -D build-artifacts/ --clobber
+            done
+          fi
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
