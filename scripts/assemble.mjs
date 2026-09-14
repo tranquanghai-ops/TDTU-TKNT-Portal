@@ -98,19 +98,20 @@ for (const app of enabledApps) {
 
   log(`Processing app "${app.id}" → ${app.mount} (version: ${app.version ?? 'unversioned'})`);
 
-  // Locate artifact
   const artifactPath = resolve(ARTIFACTS_DIR, app.artifact);
+
+  if (DRY_RUN) {
+    log(`  [DRY RUN] Would locate ${artifactPath} and extract → ${mountDir}`);
+    continue;
+  }
+
+  // Locate artifact
   if (!existsSync(artifactPath)) {
     fail(
       `Artifact not found: ${artifactPath}\n` +
       `  → Download it from https://github.com/${app.repo}/releases/download/${app.version}/${app.artifact}\n` +
       `  → Place it in build-artifacts/${app.artifact}`
     );
-  }
-
-  if (DRY_RUN) {
-    log(`  [DRY RUN] Would extract ${artifactPath} → ${mountDir}`);
-    continue;
   }
 
   // Extract zip
