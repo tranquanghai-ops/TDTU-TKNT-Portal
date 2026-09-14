@@ -1,0 +1,17 @@
+{
+  "name": "tdtu-tknt-portal",
+  "version": "1.0.0",
+  "description": "TDTU TKNT Portal – assembles and deploys https://tdtu-tknt.web.app",
+  "type": "module",
+  "scripts": {
+    "validate": "node scripts/validate-registry.mjs",
+    "assemble": "node scripts/assemble.mjs",
+    "build": "node scripts/validate-registry.mjs && node scripts/assemble.mjs",
+    "deploy": "node scripts/validate-registry.mjs && node scripts/assemble.mjs && firebase deploy --only hosting"
+  },
+  "engines": {
+    "node": ">=18"
+  },
+  "dependencies": {},
+  "devDependencies": {}
+}
