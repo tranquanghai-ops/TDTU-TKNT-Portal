@@ -134,6 +134,11 @@
 
     onAuthStateChanged(auth, user => {
       if (user) {
+        // Lưu thông tin người dùng lên window để các ứng dụng con hiển thị
+        window.__tdtu_user = { email: user.email, displayName: user.displayName };
+        window.__tdtu_user_email = user.email || '';
+        window.dispatchEvent(new CustomEvent('tdtu-user-change', { detail: user }));
+
         // Đã đăng nhập: gỡ overlay
         overlay.style.opacity = '0';
         setTimeout(() => {
@@ -142,6 +147,10 @@
           if (styleEl) styleEl.remove();
         }, 200);
       } else {
+        window.__tdtu_user = null;
+        window.__tdtu_user_email = '';
+        window.dispatchEvent(new CustomEvent('tdtu-user-change', { detail: null }));
+
         // Chưa đăng nhập: hiển thị giao diện yêu cầu đăng nhập
         const spinner = document.getElementById('tdtu-auth-spinner');
         const title = document.getElementById('tdtu-auth-title');

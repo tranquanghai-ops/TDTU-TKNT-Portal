@@ -47,6 +47,11 @@ export async function loginWithGoogle() {
 }
 
 export async function logout() {
+  try {
+    // Xóa Gemini API Key lưu trong sessionStorage khi logout Portal
+    sessionStorage.removeItem('tdtu_gemini_api_key_session');
+    sessionStorage.removeItem('tdtu_gemini_storage_type');
+  } catch (e) {}
   const authInstance = await initAuth();
   return await signOut(authInstance);
 }
