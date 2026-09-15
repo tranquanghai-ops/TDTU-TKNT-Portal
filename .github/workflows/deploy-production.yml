@@ -57,8 +57,13 @@ jobs:
               REPO=$(echo "$app" | jq -r '.repo')
               VERSION=$(echo "$app" | jq -r '.version')
               ARTIFACT=$(echo "$app" | jq -r '.artifact')
-              echo "Downloading $ARTIFACT for $REPO @ $VERSION..."
-              gh release download "$VERSION" -R "$REPO" -p "$ARTIFACT" -D build-artifacts/ --clobber
+              if [ "$VERSION" = "latest" ]; then
+                echo "Downloading latest release of $ARTIFACT for $REPO..."
+                gh release download -R "$REPO" -p "$ARTIFACT" -D build-artifacts/ --clobber
+              else
+                echo "Downloading $ARTIFACT for $REPO @ $VERSION..."
+                gh release download "$VERSION" -R "$REPO" -p "$ARTIFACT" -D build-artifacts/ --clobber
+              fi
             done
           fi
         env:
