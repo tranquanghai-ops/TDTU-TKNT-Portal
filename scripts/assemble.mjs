@@ -79,11 +79,23 @@ if (!DRY_RUN) {
   cleanDir(BUILD_DIR);
 }
 
-// 2. Copy portal index.html
+// 2. Copy portal index.html and auth scripts
 if (!existsSync(INDEX_SRC)) fail(`Portal index.html not found at ${INDEX_SRC}`);
 if (!DRY_RUN) {
   cpSync(INDEX_SRC, resolve(BUILD_DIR, 'index.html'));
   log('Copied index.html → build/index.html');
+
+  const authSharedSrc = resolve(ROOT, 'auth-shared.js');
+  if (existsSync(authSharedSrc)) {
+    cpSync(authSharedSrc, resolve(BUILD_DIR, 'auth-shared.js'));
+    log('Copied auth-shared.js → build/auth-shared.js');
+  }
+
+  const authGuardSrc = resolve(ROOT, 'auth-guard.js');
+  if (existsSync(authGuardSrc)) {
+    cpSync(authGuardSrc, resolve(BUILD_DIR, 'auth-guard.js'));
+    log('Copied auth-guard.js → build/auth-guard.js');
+  }
 }
 
 // 3. Process enabled apps
@@ -159,6 +171,22 @@ for (const app of enabledApps) {
       fail(`App "${app.id}" requires index.html but none was found at ${appIndex}`);
     }
     log(`  ✓ index.html found.`);
+
+    // Tự động bảo vệ app bằng auth-guard chung
+    try {
+      let content = readFileSync(appIndex, 'utf8');
+      if (!content.includes('/auth-guard.js')) {
+        if (content.includes('<head>')) {
+          content = content.replace('<head>', '<head>\n  <script src="/auth-guard.js"></script>');
+        } else {
+          content = '<script src="/auth-guard.js"></script>\n' + content;
+        }
+        writeFileSync(appIndex, content, 'utf8');
+        log(`  ✓ Injected auth-guard.js into ${app.id}/index.html`);
+      }
+    } catch (err) {
+      log(`  ! Warning: could not inject auth-guard into ${app.id}: ${err.message}`);
+    }
   }
 
   log(`  ✓ Extracted ${extracted.length} file(s) to build/${mountSegment}/`);

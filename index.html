@@ -20,7 +20,12 @@
     header {
       background: #1a3c5e;
       color: #fff;
-      padding: 2rem 1.5rem 1.5rem;
+      padding: 1.75rem 1.5rem 1.25rem;
+      position: relative;
+    }
+    .header-content {
+      max-width: 900px;
+      margin: 0 auto;
       text-align: center;
     }
     header .subtitle {
@@ -41,6 +46,40 @@
       opacity: 0.8;
     }
 
+    /* User Profile Bar */
+    .user-bar {
+      max-width: 900px;
+      margin: 1rem auto 0;
+      display: flex;
+      align-items: center;
+      justify-content: flex-end;
+      gap: 0.75rem;
+      padding-top: 0.75rem;
+      border-top: 1px solid rgba(255,255,255,0.15);
+      font-size: 0.85rem;
+    }
+    .user-avatar {
+      width: 32px;
+      height: 32px;
+      border-radius: 50%;
+      border: 2px solid rgba(255,255,255,0.8);
+      object-fit: cover;
+    }
+    .user-name { font-weight: 600; }
+    .user-email { opacity: 0.75; font-size: 0.8rem; }
+    .btn-logout {
+      background: rgba(255,255,255,0.15);
+      border: 1px solid rgba(255,255,255,0.3);
+      color: #fff;
+      padding: 0.35rem 0.75rem;
+      border-radius: 6px;
+      font-size: 0.8rem;
+      cursor: pointer;
+      margin-left: 0.5rem;
+      transition: background 0.15s;
+    }
+    .btn-logout:hover { background: rgba(255,255,255,0.25); }
+
     main {
       flex: 1;
       max-width: 900px;
@@ -49,11 +88,57 @@
       padding: 2.5rem 1.5rem;
     }
 
+    /* Login Box */
+    .login-box {
+      background: #fff;
+      border: 1px solid #e2e2e0;
+      border-radius: 12px;
+      padding: 3rem 2rem;
+      text-align: center;
+      max-width: 480px;
+      margin: 2rem auto;
+      box-shadow: 0 4px 20px rgba(0,0,0,0.05);
+    }
+    .login-box h2 {
+      font-size: 1.35rem;
+      color: #1a3c5e;
+      margin-bottom: 0.75rem;
+    }
+    .login-box p {
+      font-size: 0.95rem;
+      color: #555;
+      line-height: 1.5;
+      margin-bottom: 2rem;
+    }
+    .btn-google {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0.75rem;
+      background: #fff;
+      color: #374151;
+      border: 1px solid #d1d5db;
+      font-weight: 600;
+      font-size: 0.95rem;
+      padding: 0.75rem 1.5rem;
+      border-radius: 8px;
+      cursor: pointer;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.08);
+      transition: all 0.15s;
+      width: 100%;
+      max-width: 300px;
+    }
+    .btn-google:hover {
+      background: #f9fafb;
+      border-color: #9ca3af;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.12);
+    }
+
     .apps-grid {
       display: grid;
       grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
       gap: 1.25rem;
-      margin-top: 2rem;
+      margin-top: 1.5rem;
     }
 
     .app-card {
@@ -100,39 +185,64 @@
 </head>
 <body>
   <header>
-    <p class="subtitle">Trường Đại học Tôn Đức Thắng</p>
-    <h1>Khoa Mỹ thuật Công nghiệp<br>Ngành Thiết kế Nội thất</h1>
-    <p class="tagline">Cổng thông tin &amp; công cụ hỗ trợ sinh viên</p>
+    <div class="header-content">
+      <p class="subtitle">Trường Đại học Tôn Đức Thắng</p>
+      <h1>Khoa Mỹ thuật Công nghiệp<br>Ngành Thiết kế Nội thất</h1>
+      <p class="tagline">Cổng thông tin &amp; công cụ hỗ trợ sinh viên</p>
+    </div>
+
+    <!-- User Profile Bar (Hiển thị khi đã đăng nhập) -->
+    <div class="user-bar" id="user-bar" style="display: none;">
+      <img id="user-avatar" class="user-avatar" src="" alt="Avatar" />
+      <div style="text-align:left;">
+        <div class="user-name" id="user-name"></div>
+        <div class="user-email" id="user-email"></div>
+      </div>
+      <button class="btn-logout" id="btn-logout">Đăng xuất</button>
+    </div>
   </header>
 
   <main>
-    <h2 style="font-size:1rem; color:#555; font-weight:500;">Công cụ &amp; tiện ích</h2>
+    <!-- Trạng thái chưa đăng nhập -->
+    <section class="login-box" id="login-section">
+      <h2>Chào mừng bạn</h2>
+      <p>Vui lòng đăng nhập bằng tài khoản Google để truy cập các công cụ hỗ trợ học tập và đồ án của ngành Thiết kế Nội thất.</p>
+      <button class="btn-google" id="btn-login">
+        <svg width="20" height="20" viewBox="0 0 24 24"><path fill="#EA4335" d="M12 5c1.6 0 3 .6 4.1 1.6l3.1-3.1C17.3 1.7 14.8 1 12 1 7.5 1 3.7 3.6 1.9 7.3l3.7 2.9C6.5 7.4 9 5 12 5z"/><path fill="#4285F4" d="M23.5 12.3c0-.8-.1-1.7-.2-2.3H12v4.6h6.5c-.3 1.5-1.1 2.8-2.4 3.7l3.7 2.9c2.2-2 3.7-5 3.7-8.9z"/><path fill="#FBBC05" d="M5.6 14.8c-.2-.7-.4-1.5-.4-2.8s.2-2.1.4-2.8L1.9 6.3C.7 8.7 0 10.3 0 12s.7 3.3 1.9 5.7l3.7-2.9z"/><path fill="#34A853" d="M12 23c3.2 0 6-1.1 8-3l-3.7-2.9c-1.1.7-2.5 1.2-4.3 1.2-3 0-5.5-2.4-6.4-5.2L1.9 16c1.8 3.7 5.6 7 10.1 7z"/></svg>
+        Đăng nhập bằng Google
+      </button>
+    </section>
 
-    <div class="apps-grid">
-      <!-- PDF Optimizer -->
-      <a href="/pdf-optimizer/" class="app-card">
-        <span class="app-icon">📄</span>
-        <span class="badge live">Đang hoạt động</span>
-        <p class="app-name">PDF Optimizer &amp; Resizer</p>
-        <p class="app-desc">Tối ưu, ghép, chia nhỏ và chuyển đổi file PDF ngay trên trình duyệt — không cần cài phần mềm.</p>
-      </a>
+    <!-- Trạng thái đã đăng nhập -->
+    <section id="portal-content" style="display: none;">
+      <h2 style="font-size:1rem; color:#555; font-weight:500;">Công cụ &amp; tiện ích</h2>
 
-      <!-- Video Encode Studio -->
-      <a href="/video-encode/" class="app-card">
-        <span class="app-icon">🎬</span>
-        <span class="badge live">Đang hoạt động</span>
-        <p class="app-name">Video Encode Studio</p>
-        <p class="app-desc">Mã hóa, chuyển đổi và nén video an toàn trên trình duyệt với công nghệ WebCodecs và FFmpeg WebAssembly.</p>
-      </a>
+      <div class="apps-grid">
+        <!-- PDF Optimizer -->
+        <a href="/pdf-optimizer/" class="app-card">
+          <span class="app-icon">📄</span>
+          <span class="badge live">Đang hoạt động</span>
+          <p class="app-name">PDF Optimizer &amp; Resizer</p>
+          <p class="app-desc">Tối ưu, ghép, chia nhỏ và chuyển đổi file PDF ngay trên trình duyệt — không cần cài phần mềm.</p>
+        </a>
 
-      <!-- Placeholder for future apps -->
-      <div class="app-card coming-soon" aria-disabled="true">
-        <span class="app-icon">🎓</span>
-        <span class="badge">Sắp ra mắt</span>
-        <p class="app-name">Hỗ trợ DATN</p>
-        <p class="app-desc">Hướng dẫn và biểu mẫu dành cho sinh viên làm Đồ án Tốt nghiệp ngành Thiết kế Nội thất.</p>
+        <!-- Video Encode Studio -->
+        <a href="/video-encode/" class="app-card">
+          <span class="app-icon">🎬</span>
+          <span class="badge live">Đang hoạt động</span>
+          <p class="app-name">Video Encode Studio</p>
+          <p class="app-desc">Mã hóa, chuyển đổi và nén video an toàn trên trình duyệt với công nghệ WebCodecs và FFmpeg WebAssembly.</p>
+        </a>
+
+        <!-- Placeholder for future apps -->
+        <div class="app-card coming-soon" aria-disabled="true">
+          <span class="app-icon">🎓</span>
+          <span class="badge">Sắp ra mắt</span>
+          <p class="app-name">Hỗ trợ DATN</p>
+          <p class="app-desc">Hướng dẫn và biểu mẫu dành cho sinh viên làm Đồ án Tốt nghiệp ngành Thiết kế Nội thất.</p>
+        </div>
       </div>
-    </div>
+    </section>
   </main>
 
   <footer>
@@ -142,5 +252,60 @@
   </footer>
 
   <script>document.getElementById('yr').textContent = new Date().getFullYear();</script>
+
+  <!-- Firebase Auth Client Script -->
+  <script type="module">
+    import { 
+      loginWithGoogle, 
+      logout, 
+      subscribeAuth 
+    } from './auth-shared.js';
+
+    const loginSec = document.getElementById('login-section');
+    const portalContent = document.getElementById('portal-content');
+    const userBar = document.getElementById('user-bar');
+    const userAvatar = document.getElementById('user-avatar');
+    const userName = document.getElementById('user-name');
+    const userEmail = document.getElementById('user-email');
+    const btnLogin = document.getElementById('btn-login');
+    const btnLogout = document.getElementById('btn-logout');
+
+    btnLogin.addEventListener('click', async () => {
+      try {
+        btnLogin.disabled = true;
+        btnLogin.textContent = 'Đang đăng nhập...';
+        await loginWithGoogle();
+      } catch (err) {
+        console.error('Đăng nhập thất bại:', err);
+        alert('Đăng nhập Google thất bại: ' + err.message);
+        btnLogin.disabled = false;
+        btnLogin.innerHTML = '<svg width="20" height="20" viewBox="0 0 24 24"><path fill="#EA4335" d="M12 5c1.6 0 3 .6 4.1 1.6l3.1-3.1C17.3 1.7 14.8 1 12 1 7.5 1 3.7 3.6 1.9 7.3l3.7 2.9C6.5 7.4 9 5 12 5z"/><path fill="#4285F4" d="M23.5 12.3c0-.8-.1-1.7-.2-2.3H12v4.6h6.5c-.3 1.5-1.1 2.8-2.4 3.7l3.7 2.9c2.2-2 3.7-5 3.7-8.9z"/><path fill="#FBBC05" d="M5.6 14.8c-.2-.7-.4-1.5-.4-2.8s.2-2.1.4-2.8L1.9 6.3C.7 8.7 0 10.3 0 12s.7 3.3 1.9 5.7l3.7-2.9z"/><path fill="#34A853" d="M12 23c3.2 0 6-1.1 8-3l-3.7-2.9c-1.1.7-2.5 1.2-4.3 1.2-3 0-5.5-2.4-6.4-5.2L1.9 16c1.8 3.7 5.6 7 10.1 7z"/></svg> Đăng nhập bằng Google';
+      }
+    });
+
+    btnLogout.addEventListener('click', async () => {
+      await logout();
+    });
+
+    subscribeAuth(user => {
+      if (user) {
+        // Đã đăng nhập
+        loginSec.style.display = 'none';
+        portalContent.style.display = 'block';
+        userBar.style.display = 'flex';
+        userName.textContent = user.displayName || 'Người dùng';
+        userEmail.textContent = user.email || '';
+        userAvatar.src = user.photoURL || 'data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><circle cx="12" cy="8" r="4" fill="%23fff"/><path fill="%23fff" d="M12 14c-6 0-8 4-8 4v2h16v-2s-2-4-8-4z"/></svg>';
+      } else {
+        // Chưa đăng nhập
+        loginSec.style.display = 'block';
+        portalContent.style.display = 'none';
+        userBar.style.display = 'none';
+        btnLogin.disabled = false;
+        btnLogin.innerHTML = '<svg width="20" height="20" viewBox="0 0 24 24"><path fill="#EA4335" d="M12 5c1.6 0 3 .6 4.1 1.6l3.1-3.1C17.3 1.7 14.8 1 12 1 7.5 1 3.7 3.6 1.9 7.3l3.7 2.9C6.5 7.4 9 5 12 5z"/><path fill="#4285F4" d="M23.5 12.3c0-.8-.1-1.7-.2-2.3H12v4.6h6.5c-.3 1.5-1.1 2.8-2.4 3.7l3.7 2.9c2.2-2 3.7-5 3.7-8.9z"/><path fill="#FBBC05" d="M5.6 14.8c-.2-.7-.4-1.5-.4-2.8s.2-2.1.4-2.8L1.9 6.3C.7 8.7 0 10.3 0 12s.7 3.3 1.9 5.7l3.7-2.9z"/><path fill="#34A853" d="M12 23c3.2 0 6-1.1 8-3l-3.7-2.9c-1.1.7-2.5 1.2-4.3 1.2-3 0-5.5-2.4-6.4-5.2L1.9 16c1.8 3.7 5.6 7 10.1 7z"/></svg> Đăng nhập bằng Google';
+      }
+    });
+  </script>
 </body>
 </html>
+
