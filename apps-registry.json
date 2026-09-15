@@ -28,7 +28,7 @@
       "artifact": "ifa-graduation.zip",
       "enabled": true,
       "show_on_home": false,
-      "version": "v1.1.1",
+      "version": "v1.1.2",
       "hashed_assets": false,
       "require_index": true
     }
