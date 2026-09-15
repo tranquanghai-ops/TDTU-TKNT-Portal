@@ -9,6 +9,7 @@ node_modules/
 .env
 .env.local
 .firebaserc
+.firebase/
 
 # OS
 .DS_Store
