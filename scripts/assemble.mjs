@@ -177,9 +177,9 @@ for (const app of enabledApps) {
       let content = readFileSync(appIndex, 'utf8');
       if (!content.includes('/auth-guard.js')) {
         if (content.includes('<head>')) {
-          content = content.replace('<head>', '<head>\n  <script src="/auth-guard.js"></script>');
+          content = content.replace('<head>', '<head>\n  <script src="/auth-guard.js" defer></script>');
         } else {
-          content = '<script src="/auth-guard.js"></script>\n' + content;
+          content = '<script src="/auth-guard.js" defer></script>\n' + content;
         }
         writeFileSync(appIndex, content, 'utf8');
         log(`  ✓ Injected auth-guard.js into ${app.id}/index.html`);

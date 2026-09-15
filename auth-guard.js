@@ -108,7 +108,16 @@
       </div>
     </div>
   `;
-  document.body.appendChild(overlay);
+  function attachOverlay() {
+    if (document.getElementById('tdtu-auth-overlay')) return;
+    document.body.appendChild(overlay);
+  }
+
+  if (document.body) {
+    attachOverlay();
+  } else {
+    document.addEventListener('DOMContentLoaded', attachOverlay);
+  }
 
   try {
     const { initializeApp } = await import('https://www.gstatic.com/firebasejs/10.14.0/firebase-app.js');
