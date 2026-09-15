@@ -20,6 +20,17 @@
       "version": "latest",
       "hashed_assets": true,
       "require_index": true
+    },
+    {
+      "id": "graduation",
+      "repo": "tranquanghai-ops/IFA-GRADUATION",
+      "mount": "/graduation/",
+      "artifact": "ifa-graduation.zip",
+      "enabled": true,
+      "show_on_home": false,
+      "version": "v1.0.0",
+      "hashed_assets": false,
+      "require_index": true
     }
   ]
 }

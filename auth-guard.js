@@ -120,16 +120,22 @@
   }
 
   try {
-    const { initializeApp } = await import('https://www.gstatic.com/firebasejs/10.14.0/firebase-app.js');
+    const { initializeApp, getApps, getApp } = await import('https://www.gstatic.com/firebasejs/10.14.0/firebase-app.js');
     const { getAuth, onAuthStateChanged, signInWithPopup, GoogleAuthProvider } = await import('https://www.gstatic.com/firebasejs/10.14.0/firebase-auth.js');
 
-    let config = { authDomain: "tknt-tdtu.firebaseapp.com", projectId: "tknt-tdtu" };
+    let config = { 
+      apiKey: "AIzaSyA7HDp4XThUSN2XO3m0GoBGnYf-nFjvM_M",
+      authDomain: "tknt-tdtu.firebaseapp.com", 
+      projectId: "tknt-tdtu",
+      storageBucket: "tknt-tdtu.firebasestorage.app",
+      messagingSenderId: "52631763904"
+    };
     try {
       const res = await fetch('/__/firebase/init.json');
       if (res.ok) config = await res.json();
     } catch (e) {}
 
-    const app = initializeApp(config);
+    const app = getApps().length > 0 ? getApp() : initializeApp(config);
     const auth = getAuth(app);
 
     onAuthStateChanged(auth, user => {
