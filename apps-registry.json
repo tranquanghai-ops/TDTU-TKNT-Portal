@@ -9,6 +9,16 @@
       "version": "v1.0.1",
       "hashed_assets": false,
       "require_index": true
+    },
+    {
+      "id": "video-encode",
+      "repo": "tranquanghai-ops/VIDEO-ENCODE-STUDIO",
+      "mount": "/video-encode/",
+      "artifact": "video-encode.zip",
+      "enabled": true,
+      "version": "latest",
+      "hashed_assets": true,
+      "require_index": true
     }
   ]
 }
