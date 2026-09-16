@@ -17,7 +17,7 @@
       "artifact": "video-encode.zip",
       "enabled": true,
       "show_on_home": false,
-      "version": "latest",
+      "version": "v1.3.0",
       "hashed_assets": true,
       "require_index": true
     },
