@@ -5,9 +5,8 @@ on:
     branches: ["**"]
   pull_request:
     branches: ["**"]
-  # Allow app repos to trigger validation via repository_dispatch
-  repository_dispatch:
-    types: [app-release]
+permissions:
+  contents: read
 
 concurrency:
   group: validate-${{ github.ref }}
@@ -33,8 +32,20 @@ jobs:
       - name: Validate apps-registry.json
         run: npm run validate
 
-      - name: Dry-run build (no artifacts needed)
-        run: ASSEMBLE_DRY_RUN=1 node scripts/assemble.mjs
+      - name: Download immutable app artifacts
+        run: |
+          mkdir -p build-artifacts
+          jq -c '.apps[] | select(.enabled == true)' apps-registry.json | while read -r app; do
+            REPO=$(echo "$app" | jq -r '.repo')
+            VERSION=$(echo "$app" | jq -r '.version')
+            ARTIFACT=$(echo "$app" | jq -r '.artifact')
+            gh release download "$VERSION" -R "$REPO" -p "$ARTIFACT" -D build-artifacts/ --clobber
+          done
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Verify artifacts and full build
+        run: npm run build
 
       - name: Check build/ is gitignored
         run: |
@@ -49,4 +60,4 @@ jobs:
         run: |
           echo "### Validation Summary" >> $GITHUB_STEP_SUMMARY
           echo "- Registry: validated" >> $GITHUB_STEP_SUMMARY
-          echo "- Dry-run build: passed" >> $GITHUB_STEP_SUMMARY
+          echo "- Immutable artifacts and full build: passed" >> $GITHUB_STEP_SUMMARY

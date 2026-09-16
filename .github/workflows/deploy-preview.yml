@@ -18,6 +18,10 @@ on:
         required: false
         default: "Manual preview test"
 
+permissions:
+  contents: read
+  checks: write
+
 concurrency:
   group: deploy-preview-${{ github.ref }}
   cancel-in-progress: true
