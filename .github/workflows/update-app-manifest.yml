@@ -1,0 +1,48 @@
+name: Update App Artifact Manifest
+
+on:
+  workflow_dispatch:
+  schedule:
+    - cron: '23 2 * * *'
+
+permissions:
+  contents: write
+  pull-requests: write
+
+concurrency:
+  group: update-app-manifest
+  cancel-in-progress: false
+
+jobs:
+  update-manifest:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: main
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+      - name: Find immutable app releases
+        run: node scripts/update-release-manifest.mjs --write
+      - name: Validate updated registry
+        run: npm run validate
+      - name: Detect manifest changes
+        id: changes
+        run: |
+          if git diff --quiet -- apps-registry.json; then
+            echo "changed=false" >> "$GITHUB_OUTPUT"
+          else
+            echo "changed=true" >> "$GITHUB_OUTPUT"
+          fi
+      - name: Create manifest update PR
+        if: steps.changes.outputs.changed == 'true'
+        uses: peter-evans/create-pull-request@v7
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+          branch: automation/update-app-artifacts
+          delete-branch: true
+          commit-message: 'chore(registry): update immutable app artifacts'
+          title: 'chore(registry): update immutable app artifacts'
+          body-path: manifest-update-summary.md
+          labels: automation, dependencies

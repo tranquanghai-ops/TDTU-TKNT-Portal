@@ -5,9 +5,13 @@
   "type": "module",
   "scripts": {
     "validate": "node scripts/validate-registry.mjs",
+    "verify:artifacts": "node scripts/verify-artifacts.mjs",
     "assemble": "node scripts/assemble.mjs",
-    "build": "node scripts/validate-registry.mjs && node scripts/assemble.mjs",
-    "deploy": "node scripts/validate-registry.mjs && node scripts/assemble.mjs && firebase deploy --only hosting"
+    "validate:build": "node scripts/validate-build.mjs",
+    "build": "node scripts/validate-registry.mjs && node scripts/verify-artifacts.mjs && node scripts/assemble.mjs && node scripts/validate-build.mjs",
+    "deploy": "node scripts/deploy-guidance.mjs",
+    "test": "node --test tests/*.test.mjs",
+    "update:manifest": "node scripts/update-release-manifest.mjs"
   },
   "engines": {
     "node": ">=18"

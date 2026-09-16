@@ -17,15 +17,16 @@
  * When no apps are enabled, still produces a valid build/ with just index.html.
  */
 
-import { readFileSync, writeFileSync, mkdirSync, rmSync, existsSync, cpSync, readdirSync } from 'fs';
+import { createReadStream, readFileSync, writeFileSync, mkdirSync, rmSync, existsSync, cpSync, readdirSync } from 'fs';
+import { createHash } from 'crypto';
 import { resolve, normalize, dirname, sep, join, relative } from 'path';
 import { fileURLToPath } from 'url';
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
 const ROOT = resolve(__dirname, '..');
-const BUILD_DIR = resolve(ROOT, 'build');
-const ARTIFACTS_DIR = resolve(ROOT, 'build-artifacts');
-const REGISTRY_PATH = resolve(ROOT, 'apps-registry.json');
+const BUILD_DIR = process.env.PORTAL_BUILD_DIR ? resolve(process.env.PORTAL_BUILD_DIR) : resolve(ROOT, 'build');
+const ARTIFACTS_DIR = process.env.PORTAL_ARTIFACTS_DIR ? resolve(process.env.PORTAL_ARTIFACTS_DIR) : resolve(ROOT, 'build-artifacts');
+const REGISTRY_PATH = process.env.PORTAL_REGISTRY_PATH ? resolve(process.env.PORTAL_REGISTRY_PATH) : resolve(ROOT, 'apps-registry.json');
 const INDEX_SRC = resolve(ROOT, 'index.html');
 
 const DRY_RUN = process.env.ASSEMBLE_DRY_RUN === '1';
@@ -38,6 +39,16 @@ function fail(msg) { console.error(`[assemble] ERROR: ${msg}`); process.exit(1);
 function cleanDir(dir) {
   if (existsSync(dir)) rmSync(dir, { recursive: true, force: true });
   mkdirSync(dir, { recursive: true });
+}
+
+function hashFile(file) {
+  return new Promise((resolveHash, reject) => {
+    const hash = createHash('sha256');
+    createReadStream(file)
+      .on('error', reject)
+      .on('data', (chunk) => hash.update(chunk))
+      .on('end', () => resolveHash(hash.digest('hex')));
+  });
 }
 
 /**
@@ -125,6 +136,12 @@ for (const app of enabledApps) {
       `  → Place it in build-artifacts/${app.artifact}`
     );
   }
+
+  const actualDigest = await hashFile(artifactPath);
+  if (actualDigest.toLowerCase() !== app.sha256.toLowerCase()) {
+    fail(`Artifact SHA-256 mismatch for "${app.id}". Expected ${app.sha256}; got ${actualDigest}. Refusing to extract cached or stale artifact.`);
+  }
+  log(`  ✓ SHA-256 verified.`);
 
   // Extract zip
   // NOTE: Node built-ins don't include zip extraction.

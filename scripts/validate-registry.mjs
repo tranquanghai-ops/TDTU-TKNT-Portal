@@ -24,7 +24,9 @@ import { fileURLToPath } from 'url';
 import { dirname } from 'path';
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
-const REGISTRY_PATH = resolve(__dirname, '..', 'apps-registry.json');
+const REGISTRY_PATH = process.env.PORTAL_REGISTRY_PATH
+  ? resolve(process.env.PORTAL_REGISTRY_PATH)
+  : resolve(__dirname, '..', 'apps-registry.json');
 
 let registry;
 try {
@@ -119,11 +121,18 @@ for (const [i, app] of apps.entries()) {
     errors.push(`${prefix} "enabled" must be a boolean.`);
   }
 
-  // version
+  // version: enabled apps must always use a specific immutable release tag.
   if (app.version !== null && (typeof app.version !== 'string' || !app.version.trim())) {
     errors.push(`${prefix} "version" must be null or a non-empty string.`);
   } else if (app.enabled && (!app.version || !app.version.trim())) {
     errors.push(`${prefix} "version" must be a non-empty string when "enabled" is true.`);
+  } else if (app.enabled && app.version === 'latest') {
+    errors.push(`${prefix} "version" must be an immutable release tag, not "latest".`);
+  }
+
+  // sha256: do not trust an artifact based on its filename alone.
+  if (app.enabled && (typeof app.sha256 !== 'string' || !/^[a-f0-9]{64}$/i.test(app.sha256))) {
+    errors.push(`${prefix} "sha256" must be a 64-character SHA-256 hex digest for an enabled app.`);
   }
 
   // hashed_assets

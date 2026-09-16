@@ -14,10 +14,10 @@ name: Deploy Production
 on:
   push:
     branches: [main]
-  workflow_dispatch:
-  # Allow app repos to trigger production deploy after a new release
-  repository_dispatch:
-    types: [app-release]
+
+permissions:
+  contents: read
+  checks: write
 
 # Never cancel a running production deploy
 concurrency:
@@ -26,6 +26,7 @@ concurrency:
 
 jobs:
   deploy-production:
+    if: github.event_name == 'push' && github.ref == 'refs/heads/main'
     name: Build & deploy to production
     runs-on: ubuntu-latest
     environment: production
@@ -33,6 +34,8 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v4
+        with:
+          ref: ${{ github.sha }}
 
       - name: Set up Node.js
         uses: actions/setup-node@v4
@@ -57,13 +60,8 @@ jobs:
               REPO=$(echo "$app" | jq -r '.repo')
               VERSION=$(echo "$app" | jq -r '.version')
               ARTIFACT=$(echo "$app" | jq -r '.artifact')
-              if [ "$VERSION" = "latest" ]; then
-                echo "Downloading latest release of $ARTIFACT for $REPO..."
-                gh release download -R "$REPO" -p "$ARTIFACT" -D build-artifacts/ --clobber
-              else
-                echo "Downloading $ARTIFACT for $REPO @ $VERSION..."
-                gh release download "$VERSION" -R "$REPO" -p "$ARTIFACT" -D build-artifacts/ --clobber
-              fi
+              echo "Downloading immutable $ARTIFACT for $REPO @ $VERSION..."
+              gh release download "$VERSION" -R "$REPO" -p "$ARTIFACT" -D build-artifacts/ --clobber
             done
           fi
         env:
