@@ -12,6 +12,32 @@
     ],
     "cleanUrls": true,
     "trailingSlash": true,
+    "rewrites": [
+      {
+        "source": "/graduation/admin/**",
+        "destination": "/graduation/index.html"
+      },
+      {
+        "source": "/graduation/admin",
+        "destination": "/graduation/index.html"
+      },
+      {
+        "source": "/graduation/supervisor/**",
+        "destination": "/graduation/index.html"
+      },
+      {
+        "source": "/graduation/supervisor",
+        "destination": "/graduation/index.html"
+      },
+      {
+        "source": "/graduation/assessment/**",
+        "destination": "/graduation/index.html"
+      },
+      {
+        "source": "/graduation/assessment",
+        "destination": "/graduation/index.html"
+      }
+    ],
     "headers": [
       {
         "source": "**/*.html",
