@@ -30,6 +30,14 @@
         "destination": "/graduation/index.html"
       },
       {
+        "source": "/graduation/gvhd/**",
+        "destination": "/graduation/index.html"
+      },
+      {
+        "source": "/graduation/gvhd",
+        "destination": "/graduation/index.html"
+      },
+      {
         "source": "/graduation/assessment/**",
         "destination": "/graduation/index.html"
       },
