@@ -44,6 +44,14 @@
       {
         "source": "/graduation/assessment",
         "destination": "/graduation/index.html"
+      },
+      {
+        "source": "/graduation/mark/**",
+        "destination": "/graduation/index.html"
+      },
+      {
+        "source": "/graduation/mark",
+        "destination": "/graduation/index.html"
       }
     ],
     "headers": [
