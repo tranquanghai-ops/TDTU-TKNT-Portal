@@ -12,6 +12,12 @@
     ],
     "cleanUrls": true,
     "trailingSlash": true,
+    "rewrites": [
+      {
+        "source": "/graduation/**",
+        "destination": "/graduation/index.html"
+      }
+    ],
     "headers": [
       {
         "source": "**/*.html",
