@@ -28,10 +28,10 @@
       "repo": "tranquanghai-ops/IFA-GRADUATION",
       "mount": "/graduation/",
       "artifact": "ifa-graduation.zip",
-      "sha256": "9e1466f83f21fadbba35effb915d5d347610330764173d7521089980af475d70",
+      "sha256": "8c8e833aa2ca32d0114bd8d288473ea274554a6d8e89366112be2db962c9facb",
       "enabled": true,
       "show_on_home": false,
-      "version": "v2.4.0-beta.1",
+      "version": "v2.7.0-beta.1",
       "hashed_assets": false,
       "require_index": true
     }
