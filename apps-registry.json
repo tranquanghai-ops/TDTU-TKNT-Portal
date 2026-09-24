@@ -29,7 +29,7 @@
       "mount": "/graduation/",
       "artifact": "ifa-graduation.zip",
       "sha256": "89fca295eb9d25a7afbec6cd5f92cbcc9902152aa71c2608d79d76ac9df3b36e",
-      "enabled": true,
+      "enabled": false,
       "show_on_home": false,
       "version": "v2.4.0",
       "hashed_assets": false,

@@ -12,10 +12,46 @@
     ],
     "cleanUrls": true,
     "trailingSlash": true,
-    "rewrites": [
+    "redirects": [
       {
-        "source": "/graduation/**",
-        "destination": "/graduation/index.html"
+        "source": "/graduation/admin",
+        "destination": "https://ifa-graduation.web.app/admin/",
+        "type": 302
+      },
+      {
+        "source": "/graduation/admin/:path*",
+        "destination": "https://ifa-graduation.web.app/admin/:path*",
+        "type": 302
+      },
+      {
+        "source": "/graduation/supervisor",
+        "destination": "https://ifa-graduation.web.app/supervisor/",
+        "type": 302
+      },
+      {
+        "source": "/graduation/supervisor/:path*",
+        "destination": "https://ifa-graduation.web.app/supervisor/:path*",
+        "type": 302
+      },
+      {
+        "source": "/graduation/assessment",
+        "destination": "https://ifa-graduation.web.app/assessment/",
+        "type": 302
+      },
+      {
+        "source": "/graduation/assessment/:path*",
+        "destination": "https://ifa-graduation.web.app/assessment/:path*",
+        "type": 302
+      },
+      {
+        "source": "/graduation",
+        "destination": "https://ifa-graduation.web.app/",
+        "type": 302
+      },
+      {
+        "source": "/graduation/:path*",
+        "destination": "https://ifa-graduation.web.app/:path*",
+        "type": 302
       }
     ],
     "headers": [
